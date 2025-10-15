@@ -2,7 +2,6 @@
 !/**/
 !*.*
 !LICENSE
-.github
 build.exe
 cmd/mcp-server/invade-mcp-server
 cmd/mcp-server/invade-mcp-server.exe

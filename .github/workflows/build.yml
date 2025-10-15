@@ -1,0 +1,114 @@
+name: Build Executables
+
+on:
+  push:
+    branches: [ master ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+            build_name: baka-invade
+            mcp_name: invade-mcp-server
+          - os: macos-latest
+            goos: darwin
+            goarch: amd64
+            build_name: baka-invade
+            mcp_name: invade-mcp-server
+          - os: macos-latest
+            goos: darwin
+            goarch: arm64
+            build_name: baka-invade
+            mcp_name: invade-mcp-server
+          - os: windows-latest
+            goos: windows
+            goarch: amd64
+            build_name: baka-invade.exe
+            mcp_name: invade-mcp-server.exe
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.7'
+          cache-dependency-path: |
+            cmd/build/go.sum
+            cmd/mcp-server/go.sum
+
+      - name: Build baka-invade
+        working-directory: ./cmd/build
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 0
+        run: |
+          go build -v -ldflags="-s -w" -o ${{ matrix.build_name }}
+
+      - name: Build invade-mcp-server
+        working-directory: ./cmd/mcp-server
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 0
+        run: |
+          go build -v -ldflags="-s -w" -o ${{ matrix.mcp_name }}
+
+      - name: Upload baka-invade artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: baka-invade-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: cmd/build/${{ matrix.build_name }}
+          retention-days: 30
+
+      - name: Upload invade-mcp-server artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: invade-mcp-server-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: cmd/mcp-server/${{ matrix.mcp_name }}
+          retention-days: 30
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/baka-invade-linux-amd64/baka-invade
+            artifacts/baka-invade-darwin-amd64/baka-invade
+            artifacts/baka-invade-darwin-arm64/baka-invade
+            artifacts/baka-invade-windows-amd64/baka-invade.exe
+            artifacts/invade-mcp-server-linux-amd64/invade-mcp-server
+            artifacts/invade-mcp-server-darwin-amd64/invade-mcp-server
+            artifacts/invade-mcp-server-darwin-arm64/invade-mcp-server
+            artifacts/invade-mcp-server-windows-amd64/invade-mcp-server.exe
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
