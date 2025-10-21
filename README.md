@@ -15,9 +15,12 @@
 - 報章雜誌風格的設定頁與懸浮資訊卡
 - 資料來源與本專案一致，始終同步 `database/vocabs` 內容
 
-建立資料並載入：
+建立或更新資料並載入：
 
 ```bash
+cd tools/menu_classifier
+python3 train_all.py
+
 cd cmd/build
 BAKAINVADE_DIR=$(pwd)/../.. go run . extension
 ```

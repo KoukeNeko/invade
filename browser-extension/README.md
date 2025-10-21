@@ -12,9 +12,14 @@
 
 ## 資料生成
 
-擴充套件使用 `database/vocabs` 目錄的 YAML 檔案作為資料來源。安裝前請先產生 `vocabs.json`：
+擴充套件使用 `database/vocabs` 目錄的 YAML 檔案作為資料來源。安裝前請先確保語境模型與詞彙資料都是最新版本：
 
 ```bash
+# 先輸出語境權重（含 TF-IDF 分類器等）
+cd tools/menu_classifier
+python3 train_all.py
+
+# 再生成瀏覽器擴充套件所需的 JSON 資料
 cd cmd/build
 BAKAINVADE_DIR=$(pwd)/../.. go run . extension
 ```
@@ -28,6 +33,9 @@ BAKAINVADE_DIR=$(pwd)/../.. go run . extension
 - `matchMode: "standalone"`：要求詞彙需出現在標點或空白邊界之間，適合英數縮寫或需獨立顯示的詞彙。
 - `skipPhrases`: `string[]`：列出遇到特定片語時要忽略的情境，例如 `"海內存知己"`。
 - `context`: 指定上下文加權規則，例如遇到特定前後詞時扣分（可用於排除常見誤判）。
+- `uncertainRange`: 讓規則評分落在某段區間時視為「需要模型進一步判斷」。
+- `classifier`: 載入離線訓練的權重（例如 TF-IDF + Logistic Regression）以強化邊界案例。
+- `semantic`: 設定語意 embedding（ONNX + WASM）門檻與原型向量，僅在高風險詞觸發。
 
 ```yaml
 # database/vocabs/內存.yml
@@ -66,7 +74,60 @@ matchOptions:
       - position: next
         tokens: ["寄送", "寄送服務", "寄送資料"]
         weight: -1
+    uncertainRange:
+      min: -0.5
+      max: 0.5
+    classifier:
+      strategy: logreg
+      window: 3
+      bias: -0.12
+      threshold: 0.55
+      features:
+        token:next:1:寄送: -1.1
+        token:prev:1:請: 0.4
 ```
+
+### 詞彙 YAML 欄位一覽
+
+每筆詞彙資料的主要欄位如下：
+
+- `word`：詞彙本體（必填），需為唯一鍵。
+- `bopomofo`：注音，可提高瀏覽器提示卡的辨識度。
+- `category`：所屬分類，對應 `cmd/build/entity.VocabCategory`。
+- `explicit`：粗暴語言或性相關標記，可選 (`LANGUAGE` 或 `SEXUAL`)。
+- `notice`：提示卡會額外顯示的注意事項。
+- `description`：詞彙說明，支援多行文字。
+- `examples`：建議替換與錯誤範例，結構為：
+
+  ```yaml
+  examples:
+    - words: [建議詞, …]
+      correct: |
+        正確例句
+      incorrect: |
+        錯誤例句
+  ```
+
+- `matchOptions`：比對細節。常用欄位：
+  - `matchMode`: `"standalone"` 或 `"default"`。
+  - `skipPhrases`: 遇到指定片語時跳過標記。
+  - `context`: 規則層的上下文加權設定（詳見下節）。
+  - `uncertainRange`: `{ min, max }`，將規則分數落在區間內的案例交給模型。
+  - `classifier`: 離線訓練輸出的權重，欄位與 `tools/menu_classifier/build_model.py` 輸出一致：
+    - `strategy`: 目前為 `logreg`。
+    - `window`: 取用前後文 token 數。
+    - `bias`、`threshold`: 決策邏輯參數。
+    - `features`: 鍵為 `token:<position>:<index>:<word>`，值為權重。
+    - `positiveLabel`、`labels`: 標記正負類別。
+    - `requireSegments`: 是否僅在 `Intl.Segmenter` 可用時生效。
+    - `allowUnknown`: 若規則未命中，是否回傳未知而非直接拒絕。
+  - `semantic`: 深層語意分析設定：
+    - `model`: ONNX 模型代號。
+    - `enabled`: 控制是否啟用。
+    - `window`: 語境取樣長度。
+    - `threshold`: 餘弦相似度門檻。
+    - `highRiskOnly`: 僅在邊界案例啟用。
+    - `prototypes`: 參考向量清單，每筆包含 `label`、`vector`、`weight`。
 
 ## 斷詞與比對流程
 
