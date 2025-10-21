@@ -15,30 +15,34 @@ This folder contains the offline tooling that produces learned weights for ambig
 
 ```bash
 cd tools/menu_classifier
-python3 build_model.py \
-  --input data/menu_contexts.jsonl \
-  --target 菜單 \
-  --positive-label technology \
-  --window 3 \
-  --threshold 0.55
+python3 build_model.py --input data/menu_contexts.jsonl
 ```
 
-This command produces `output/context_models.json`. Any existing entries are merged, so you can train multiple vocabularies sequentially.
-
-若要處理「質量」的情境，可以改成：
+Each corpus file包含一行 `meta` 設定（例如 target、positive_label、threshold），程式會自動套用，不再需要手動傳入參數。如果要單獨訓練「質量」，直接執行：
 
 ```bash
-python3 build_model.py \
-  --input data/質量_contexts.jsonl \
-  --target 質量 \
-  --positive-label quality \
-  --window 3 \
-  --threshold 0.6
+python3 build_model.py --input data/質量_contexts.jsonl
 ```
+
+### Batch mode
+
+想一次處理所有語料，可以直接掃描 `data/`：
+
+```bash
+python3 train_all.py
+```
+
+可用 `--only 菜單 質量` 指定部分目標，或用 `--output some/path.json` 改寫輸出位置。若需忽略檔案內的 `meta` 設定，可加 `--ignore-meta`。
 
 ## Data Format
 
-`data/menu_contexts.jsonl` is a newline-delimited JSON file containing objects with at least:
+每個 `*_contexts.jsonl` 檔案的第一行可以提供 `meta` 設定：
+
+```json
+{"meta":{"target":"菜單","positive_label":"technology","window":3,"threshold":0.55,"uncertain_min":-0.5,"uncertain_max":0.5}}
+```
+
+後續行則為帶有 `label`、`text`、`source` 的樣本，例如：
 
 - `label`: the context class (`technology`, `food`, …)
 - `text`: the raw sentence (Traditional Chinese is fine)

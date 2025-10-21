@@ -1,3 +1,4 @@
+{"meta": {"target": "菜單", "positive_label": "technology", "window": 3, "threshold": 0.55, "uncertain_min": -0.5, "uncertain_max": 0.5}}
 {"label": "technology", "text": "進入設定菜單就可以更改音量大小。", "source": "sample"}
 {"label": "technology", "text": "請在工具菜單裡找到擴充功能選項。", "source": "sample"}
 {"label": "technology", "text": "按下右上角的菜單列展開系統控制。", "source": "sample"}

@@ -1,3 +1,4 @@
+{"meta": {"target": "質量", "positive_label": "quality", "window": 3, "threshold": 0.6, "uncertain_min": -0.3, "uncertain_max": 0.3}}
 {"label": "quality", "text": "這款手機的做工質量很好，金屬邊框摸起來非常扎實。", "source": "sample"}
 {"label": "quality", "text": "客服團隊的服務質量令人滿意，回覆速度也很快。", "source": "sample"}
 {"label": "quality", "text": "影片內容質量高，講解步驟清楚又有條理。", "source": "sample"}

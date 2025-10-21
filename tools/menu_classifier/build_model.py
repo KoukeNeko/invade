@@ -19,7 +19,7 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 import jieba.posseg as pseg  # type: ignore
 import numpy as np  # type: ignore
@@ -42,7 +42,7 @@ class ContextWindow:
     raw_context: str
 
 
-def parse_args() -> argparse.Namespace:
+def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Train a lightweight classifier for a vocab context.")
     parser.add_argument(
         "--input",
@@ -102,10 +102,16 @@ def parse_args() -> argparse.Namespace:
         default=Path(__file__).parent / "output" / "context_models.json",
         help="Output JSON file (merged if already present).",
     )
-    return parser.parse_args()
+    return parser
 
 
-def load_examples(path: Path) -> List[Example]:
+def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
+    parser = build_arg_parser()
+    return parser.parse_args(argv)
+
+
+def load_dataset(path: Path) -> Tuple[Dict[str, Any], List[Example]]:
+    meta: Dict[str, Any] = {}
     examples: List[Example] = []
     if not path.exists():
         raise FileNotFoundError(f"Input corpus not found: {path}")
@@ -115,12 +121,17 @@ def load_examples(path: Path) -> List[Example]:
             if not line:
                 continue
             data = json.loads(line)
+            if isinstance(data, dict) and "meta" in data:
+                payload = data.get("meta")
+                if isinstance(payload, dict):
+                    meta.update(payload)
+                continue
             text = data.get("text", "").strip()
             label = data.get("label")
             if not text or not label:
                 continue
             examples.append(Example(text=text, label=str(label), source=data.get("source")))
-    return examples
+    return meta, examples
 
 
 def extract_context_windows(
@@ -331,35 +342,64 @@ def merge_existing(output_path: Path, payload: Dict) -> Dict:
     return existing
 
 
-def main() -> int:
-    args = parse_args()
+def apply_dataset_meta(values: Dict[str, Any], meta: Dict[str, Any], defaults: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+    if not meta:
+        return values
+    mutated = dict(values)
+    for key, value in meta.items():
+        if key not in mutated:
+            continue
+        if defaults is None:
+            mutated[key] = value
+            continue
+        if mutated[key] == defaults.get(key):
+            mutated[key] = value
+    return mutated
 
-    examples = load_examples(args.input)
+
+def train_from_args(args: argparse.Namespace, defaults: Optional[argparse.Namespace] = None, allow_meta: bool = True) -> int:
+    meta, examples = load_dataset(args.input)
     if not examples:
         print("No labelled sentences found. Abort.", file=sys.stderr)
         return 1
 
+    effective_values = vars(args).copy()
+    defaults_dict = vars(defaults) if defaults is not None else None
+    if allow_meta:
+        effective_values = apply_dataset_meta(effective_values, meta, defaults_dict)
+    effective_args = argparse.Namespace(**effective_values)
+    if not isinstance(effective_args.input, Path):
+        effective_args.input = Path(effective_args.input)
+    if not isinstance(effective_args.output, Path):
+        effective_args.output = Path(effective_args.output)
+
     contexts, label_counts, pos_by_label = extract_context_windows(
         examples,
-        target=args.target,
-        window=args.window,
+        target=effective_args.target,
+        window=effective_args.window,
     )
     if not contexts:
         print("No context windows extracted. Check that the target word appears in the corpus.", file=sys.stderr)
         return 1
 
-    model, vectorizer, decision_scores = train_classifier(contexts, args.positive_label)
-    payload = export_payload(args, contexts, model, vectorizer, decision_scores, label_counts, pos_by_label)
+    model, vectorizer, decision_scores = train_classifier(contexts, effective_args.positive_label)
+    payload = export_payload(effective_args, contexts, model, vectorizer, decision_scores, label_counts, pos_by_label)
 
-    output_path: Path = args.output
+    output_path: Path = effective_args.output
     output_path.parent.mkdir(parents=True, exist_ok=True)
     merged = merge_existing(output_path, payload)
 
     with output_path.open("w", encoding="utf-8") as handle:
         json.dump(merged, handle, ensure_ascii=False, indent=2, sort_keys=True)
 
-    print(f"Exported classifier for '{args.target}' to {output_path}")
+    print(f"Exported classifier for '{effective_args.target}' to {output_path}")
     return 0
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    args = parse_args(argv)
+    defaults = build_arg_parser().parse_args([])
+    return train_from_args(args, defaults=defaults)
 
 
 if __name__ == "__main__":
