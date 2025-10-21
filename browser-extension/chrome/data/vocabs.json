@@ -1,85 +1,5 @@
 [
   {
-    "word": "通過",
-    "category": "ADJECTIVE",
-    "categoryLabel": "形容詞",
-    "explicit": "",
-    "explicitLabel": "未知",
-    "description": "表示數位資料傳遞時會經過的路線，英文稱作 Through 或 By。",
-    "notice": "這個詞彙指的是電腦術語，而非「穿過」某項事物。",
-    "recommended": [
-      "透過"
-    ],
-    "examples": [
-      {
-        "words": [
-          "透過"
-        ],
-        "correct": "這項功能讓音訊可以直接{{透過}} HDMI 輸出到電視。",
-        "incorrect": "這項功能讓[[音頻]]可以直接{{通過}} HDMI 輸出到電視。"
-      }
-    ],
-    "matchOptions": {
-      "skipPhrases": [
-        "通過年齡驗證",
-        "通過身份驗證",
-        "通過身分驗證",
-        "通過審核",
-        "通過審查",
-        "通過考試",
-        "通過測試"
-      ],
-      "context": {
-        "baseScore": 0.6,
-        "features": [
-          {
-            "position": "window",
-            "tokens": [
-              "HDMI",
-              "音訊",
-              "音頻",
-              "音源",
-              "訊號",
-              "網路",
-              "連線",
-              "介面"
-            ],
-            "weight": 0.6
-          },
-          {
-            "position": "next",
-            "tokens": [
-              "年齡",
-              "身分",
-              "身份",
-              "審核",
-              "審查",
-              "驗證",
-              "認證",
-              "考試",
-              "測試",
-              "評估",
-              "評審"
-            ],
-            "weight": -1
-          },
-          {
-            "position": "prev",
-            "tokens": [
-              "必須",
-              "需要",
-              "已經",
-              "須",
-              "通常"
-            ],
-            "weight": -0.4
-          }
-        ]
-      }
-    },
-    "lastModifiedTs": 1761052358
-  },
-  {
     "word": "質量",
     "category": "NOUN",
     "categoryLabel": "名詞",
@@ -194,10 +114,261 @@
         "uncertainRange": {
           "min": -0.3,
           "max": 0.3
+        },
+        "classifier": {
+          "strategy": "logreg",
+          "version": 1,
+          "window": 3,
+          "bias": -0.146193,
+          "threshold": 0.6,
+          "features": {
+            "token:next:1:中心": -0.132973,
+            "token:next:1:令人": 0.101266,
+            "token:next:1:分布": -0.147824,
+            "token:next:1:堪稱": 0.136915,
+            "token:next:1:守": -0.203268,
+            "token:next:1:很": 0.101266,
+            "token:next:1:提升": 0.101266,
+            "token:next:1:穩定": 0.156534,
+            "token:next:1:與": -0.263393,
+            "token:next:1:高": 0.136992,
+            "token:next:1:黑洞": -0.132973,
+            "token:next:2:。": -0.147824,
+            "token:next:2:好": 0.101266,
+            "token:next:2:如何": -0.132973,
+            "token:next:2:對": -0.132973,
+            "token:next:2:恆": -0.203268,
+            "token:next:2:滿意": 0.101266,
+            "token:next:2:能量": -0.127287,
+            "token:next:2:許多": 0.101266,
+            "token:next:2:近年": 0.136915,
+            "token:next:2:體積": -0.136106,
+            "token:next:2:，": 0.293526,
+            "token:next:3:。": -0.127287,
+            "token:next:3:以": -0.136106,
+            "token:next:3:出貨": 0.156534,
+            "token:next:3:周遭": -0.132973,
+            "token:next:3:定律": -0.203268,
+            "token:next:3:影響": -0.132973,
+            "token:next:3:最佳": 0.136915,
+            "token:next:3:講解": 0.136992,
+            "token:next:3:，": 0.303798,
+            "token:prev:1:做工": 0.101266,
+            "token:prev:1:內容": 0.136992,
+            "token:prev:1:地下": -0.147824,
+            "token:prev:1:整體": 0.101266,
+            "token:prev:1:文稿": 0.136915,
+            "token:prev:1:服務": 0.101266,
+            "token:prev:1:產品": 0.156534,
+            "token:prev:1:的": -0.263393,
+            "token:prev:1:解釋": -0.132973,
+            "token:prev:1:超大": -0.132973,
+            "token:prev:2:影片": 0.136992,
+            "token:prev:2:月球": -0.147824,
+            "token:prev:2:束流": -0.127287,
+            "token:prev:2:樣品": -0.136106,
+            "token:prev:2:正在": -0.132973,
+            "token:prev:2:的": 0.440713,
+            "token:prev:2:觀測": -0.132973,
+            "token:prev:3:了": -0.136106,
+            "token:prev:3:團隊": 0.101266,
+            "token:prev:3:手機": 0.101266,
+            "token:prev:3:控制": -0.127287,
+            "token:prev:3:提案": 0.136915,
+            "token:prev:3:正在": -0.132973,
+            "token:prev:3:測繪": -0.147824,
+            "token:prev:3:課": -0.132973,
+            "token:prev:3:選手": 0.101266,
+            "token:window:。": -0.275111,
+            "token:window:中心": -0.132973,
+            "token:window:了": -0.136106,
+            "token:window:令人": 0.101266,
+            "token:window:以": -0.136106,
+            "token:window:做工": 0.101266,
+            "token:window:內容": 0.136992,
+            "token:window:出貨": 0.156534,
+            "token:window:分布": -0.147824,
+            "token:window:周遭": -0.132973,
+            "token:window:團隊": 0.101266,
+            "token:window:地下": -0.147824,
+            "token:window:堪稱": 0.136915,
+            "token:window:好": 0.101266,
+            "token:window:如何": -0.132973,
+            "token:window:守": -0.203268,
+            "token:window:定律": -0.203268,
+            "token:window:對": -0.132973,
+            "token:window:影片": 0.136992,
+            "token:window:影響": -0.132973,
+            "token:window:很": 0.101266,
+            "token:window:恆": -0.203268,
+            "token:window:手機": 0.101266,
+            "token:window:控制": -0.127287,
+            "token:window:提升": 0.101266,
+            "token:window:提案": 0.136915,
+            "token:window:整體": 0.101266,
+            "token:window:文稿": 0.136915,
+            "token:window:最佳": 0.136915,
+            "token:window:月球": -0.147824,
+            "token:window:服務": 0.101266,
+            "token:window:束流": -0.127287,
+            "token:window:樣品": -0.136106,
+            "token:window:正在": -0.265947,
+            "token:window:測繪": -0.147824,
+            "token:window:滿意": 0.101266,
+            "token:window:產品": 0.156534,
+            "token:window:的": 0.17732,
+            "token:window:穩定": 0.156534,
+            "token:window:能量": -0.127287,
+            "token:window:與": -0.263393,
+            "token:window:觀測": -0.132973,
+            "token:window:解釋": -0.132973,
+            "token:window:許多": 0.101266,
+            "token:window:課": -0.132973,
+            "token:window:講解": 0.136992,
+            "token:window:超大": -0.132973,
+            "token:window:近年": 0.136915,
+            "token:window:選手": 0.101266,
+            "token:window:體積": -0.136106,
+            "token:window:高": 0.136992,
+            "token:window:黑洞": -0.132973,
+            "token:window:，": 0.597324
+          },
+          "labels": [
+            "physics",
+            "quality"
+          ],
+          "positiveLabel": "quality",
+          "featureNorm": "binary",
+          "requireSegments": true,
+          "metadata": {
+            "classDistribution": {
+              "physics": 6,
+              "quality": 6
+            },
+            "metrics": {
+              "accuracy": 1,
+              "meanDecisionScore": 0.1062,
+              "stdDecisionScore": 1.8899
+            },
+            "posFrequencies": {
+              "physics": {
+                "m": 1,
+                "n": 7,
+                "nr": 1,
+                "ns": 1,
+                "p": 3,
+                "r": 1,
+                "s": 1,
+                "t": 2,
+                "uj": 2,
+                "ul": 1,
+                "v": 6,
+                "vn": 3,
+                "x": 3
+              },
+              "quality": {
+                "a": 3,
+                "d": 1,
+                "m": 1,
+                "n": 7,
+                "nrt": 1,
+                "t": 1,
+                "uj": 4,
+                "v": 8,
+                "vn": 1,
+                "x": 5,
+                "z": 1
+              }
+            },
+            "samples": 12,
+            "source": "/Users/doeshing/Documents/GitHub/invade/tools/menu_classifier/data/質量_contexts.jsonl",
+            "trainedAt": "2025-10-21T13:50:26.784371+00:00"
+          },
+          "allowUnknown": true
         }
       }
     },
-    "lastModifiedTs": 1761051626
+    "lastModifiedTs": 1761053124
+  },
+  {
+    "word": "通過",
+    "category": "ADJECTIVE",
+    "categoryLabel": "形容詞",
+    "explicit": "",
+    "explicitLabel": "未知",
+    "description": "表示數位資料傳遞時會經過的路線，英文稱作 Through 或 By。",
+    "notice": "這個詞彙指的是電腦術語，而非「穿過」某項事物。",
+    "recommended": [
+      "透過"
+    ],
+    "examples": [
+      {
+        "words": [
+          "透過"
+        ],
+        "correct": "這項功能讓音訊可以直接{{透過}} HDMI 輸出到電視。",
+        "incorrect": "這項功能讓[[音頻]]可以直接{{通過}} HDMI 輸出到電視。"
+      }
+    ],
+    "matchOptions": {
+      "skipPhrases": [
+        "通過年齡驗證",
+        "通過身份驗證",
+        "通過身分驗證",
+        "通過審核",
+        "通過審查",
+        "通過考試",
+        "通過測試"
+      ],
+      "context": {
+        "baseScore": 0.6,
+        "features": [
+          {
+            "position": "window",
+            "tokens": [
+              "HDMI",
+              "音訊",
+              "音頻",
+              "音源",
+              "訊號",
+              "網路",
+              "連線",
+              "介面"
+            ],
+            "weight": 0.6
+          },
+          {
+            "position": "next",
+            "tokens": [
+              "年齡",
+              "身分",
+              "身份",
+              "審核",
+              "審查",
+              "驗證",
+              "認證",
+              "考試",
+              "測試",
+              "評估",
+              "評審"
+            ],
+            "weight": -1
+          },
+          {
+            "position": "prev",
+            "tokens": [
+              "必須",
+              "需要",
+              "已經",
+              "須",
+              "通常"
+            ],
+            "weight": -0.4
+          }
+        ]
+      }
+    },
+    "lastModifiedTs": 1761053124
   },
   {
     "word": "菜單",
@@ -287,7 +458,113 @@
             ],
             "weight": -0.5
           }
-        ]
+        ],
+        "uncertainRange": {
+          "min": -0.5,
+          "max": 0.5
+        },
+        "classifier": {
+          "strategy": "logreg",
+          "version": 1,
+          "window": 3,
+          "bias": 0.019074,
+          "threshold": 0.55,
+          "features": {
+            "token:next:1:上": -0.241434,
+            "token:next:1:列展": 0.152574,
+            "token:next:1:就": 0.149847,
+            "token:next:1:提供": -0.177125,
+            "token:next:1:裡": 0.135212,
+            "token:next:2:可以": 0.149847,
+            "token:next:2:多種": -0.177125,
+            "token:next:2:找到": 0.135212,
+            "token:next:2:有": -0.241434,
+            "token:next:2:開系": 0.152574,
+            "token:next:3:擴充": 0.135212,
+            "token:next:3:更改": 0.149847,
+            "token:next:3:純素": -0.177125,
+            "token:next:3:統": 0.152574,
+            "token:next:3:詳細": -0.241434,
+            "token:prev:1:工具": 0.135212,
+            "token:prev:1:的": -0.024551,
+            "token:prev:1:設定": 0.149847,
+            "token:prev:2:右上角": 0.152574,
+            "token:prev:2:在": 0.135212,
+            "token:prev:2:進入": 0.149847,
+            "token:prev:2:餐廳": -0.177125,
+            "token:prev:3:下": 0.152574,
+            "token:prev:3:請": 0.135212,
+            "token:prev:3:這家": -0.177125,
+            "token:window:上": -0.241434,
+            "token:window:下": 0.152574,
+            "token:window:列展": 0.152574,
+            "token:window:可以": 0.149847,
+            "token:window:右上角": 0.152574,
+            "token:window:在": 0.135212,
+            "token:window:多種": -0.177125,
+            "token:window:就": 0.149847,
+            "token:window:工具": 0.135212,
+            "token:window:找到": 0.135212,
+            "token:window:提供": -0.177125,
+            "token:window:擴充": 0.135212,
+            "token:window:更改": 0.149847,
+            "token:window:有": -0.241434,
+            "token:window:的": -0.024551,
+            "token:window:純素": -0.177125,
+            "token:window:統": 0.152574,
+            "token:window:裡": 0.135212,
+            "token:window:設定": 0.149847,
+            "token:window:詳細": -0.241434,
+            "token:window:請": 0.135212,
+            "token:window:這家": -0.177125,
+            "token:window:進入": 0.149847,
+            "token:window:開系": 0.152574,
+            "token:window:餐廳": -0.177125
+          },
+          "labels": [
+            "food",
+            "technology"
+          ],
+          "positiveLabel": "technology",
+          "featureNorm": "binary",
+          "requireSegments": true,
+          "metadata": {
+            "classDistribution": {
+              "food": 2,
+              "technology": 3
+            },
+            "metrics": {
+              "accuracy": 1,
+              "meanDecisionScore": 0.2848,
+              "stdDecisionScore": 1.5568
+            },
+            "posFrequencies": {
+              "food": {
+                "ad": 1,
+                "f": 1,
+                "m": 1,
+                "n": 2,
+                "r": 1,
+                "uj": 1,
+                "v": 2
+              },
+              "technology": {
+                "c": 1,
+                "d": 1,
+                "f": 3,
+                "n": 1,
+                "p": 1,
+                "uj": 1,
+                "v": 8,
+                "vn": 1
+              }
+            },
+            "samples": 5,
+            "source": "/Users/doeshing/Documents/GitHub/invade/tools/menu_classifier/data/menu_contexts.jsonl",
+            "trainedAt": "2025-10-21T13:50:26.556771+00:00"
+          },
+          "allowUnknown": true
+        }
       }
     },
     "lastModifiedTs": 1761048788
