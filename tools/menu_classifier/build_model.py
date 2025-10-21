@@ -397,9 +397,8 @@ def train_from_args(args: argparse.Namespace, defaults: Optional[argparse.Namesp
 
 
 def main(argv: Optional[List[str]] = None) -> int:
-    args = parse_args(argv)
-    defaults = build_arg_parser().parse_args([])
-    return train_from_args(args, defaults=defaults)
+    print("Single-target training has been removed. Use train_all.py to train datasets.", file=sys.stderr)
+    return 1
 
 
 if __name__ == "__main__":

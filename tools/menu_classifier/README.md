@@ -3,7 +3,7 @@
 This folder contains the offline tooling that produces learned weights for ambiguous vocabularies (e.g. `菜單`). The workflow:
 
 1. Collect labelled sentences that contain the target vocab in different contexts and store them in JSONL (`data/*.jsonl`).
-2. Run `build_model.py` to train a balanced logistic regression classifier and export the weights to `output/context_models.json`.
+2. Run `train_all.py` to train balanced logistic regression classifiers and export the weights to `output/context_models.json`.
 3. Execute `go run ./cmd/build extension` so the build step merges the generated weights into `browser-extension/chrome/data/vocabs.json`.
 
 ## Requirements
@@ -11,28 +11,17 @@ This folder contains the offline tooling that produces learned weights for ambig
 - Python 3.9+
 - `pip install jieba scikit-learn numpy`
 
-## Quick Start
+## Training
 
-```bash
-cd tools/menu_classifier
-python3 build_model.py --input data/menu_contexts.jsonl
-```
-
-Each corpus file包含一行 `meta` 設定（例如 target、positive_label、threshold），程式會自動套用，不再需要手動傳入參數。如果要單獨訓練「質量」，直接執行：
-
-```bash
-python3 build_model.py --input data/質量_contexts.jsonl
-```
-
-### Batch mode
-
-想一次處理所有語料，可以直接掃描 `data/`：
+所有語料一次處理即可：
 
 ```bash
 python3 train_all.py
 ```
 
 可用 `--only 菜單 質量` 指定部分目標，或用 `--output some/path.json` 改寫輸出位置。若需忽略檔案內的 `meta` 設定，可加 `--ignore-meta`。
+
+> 若只想處理特定詞彙，請使用 `--only` 篩選。
 
 ## Data Format
 
@@ -44,15 +33,11 @@ python3 train_all.py
 
 後續行則為帶有 `label`、`text`、`source` 的樣本，例如：
 
-- `label`: the context class (`technology`, `food`, …)
-- `text`: the raw sentence (Traditional Chinese is fine)
-- `source` *(optional)*: provenance note
-
-Example line:
-
 ```json
 {"label":"technology","text":"按下右上角的菜單列展開系統控制。","source":"sample"}
 ```
+
+其中 `label` 代表語境類別、`text` 是原始句子內容，`source` 可以紀錄資料來源（可省略）。
 
 ## Output Payload
 
