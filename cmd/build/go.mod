@@ -4,6 +4,7 @@ go 1.23.0
 
 require (
 	github.com/caris-events/gg v0.0.0-20230813142135-c8e9c10fd21b
+	github.com/liuzl/gocc v0.0.0-20231231122217-0372e1059ca5
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/sabloger/sitemap-generator v1.3.0
 	github.com/samber/lo v1.47.0
@@ -14,8 +15,11 @@ require (
 )
 
 require (
+	github.com/adamzy/cedar-go v0.0.0-20170805034717-80a9c64b256d // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
+	github.com/liuzl/cedar-go v0.0.0-20170805034717-80a9c64b256d // indirect
+	github.com/liuzl/da v0.0.0-20180704015230-14771aad5b1d // indirect
 	github.com/tdewolff/parse v2.3.4+incompatible // indirect
 	github.com/tdewolff/test v1.0.10 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect

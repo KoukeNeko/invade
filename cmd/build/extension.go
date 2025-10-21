@@ -98,20 +98,19 @@ func buildExtensionAssets(_ *cli.Context) error {
 			})
 		}
 
-		results = append(results, extensionVocab{
-			Word:           vocab.Word,
-			Category:       vocab.Category,
-			CategoryLabel:  entity.VocabCategoryStr[vocab.Category],
-			Explicit:       vocab.Explicit,
-			ExplicitLabel:  entity.VocabExplicitStr[vocab.Explicit],
-			Description:    strings.TrimSpace(vocab.Description),
-			Notice:         strings.TrimSpace(vocab.Notice),
-			Deprecation:    strings.TrimSpace(vocab.Deprecation),
-			Recommended:    recommended,
-			Examples:       formattedExamples,
-			MatchOptions:   vocab.MatchOptions,
-			LastModifiedTs: vocab.ModTime.Unix(),
-		})
+		aliases := prepareAliases(vocab)
+		matchOptions := augmentMatchOptions(vocab.MatchOptions)
+
+		baseEntry := buildExtensionEntry(vocab, vocab.Word, recommended, formattedExamples, matchOptions)
+		results = append(results, baseEntry)
+
+		for _, aliasWord := range aliases {
+			if aliasWord == vocab.Word {
+				continue
+			}
+			aliasEntry := buildExtensionEntry(vocab, aliasWord, recommended, formattedExamples, matchOptions)
+			results = append(results, aliasEntry)
+		}
 	}
 
 	sort.Slice(results, func(i, j int) bool {
@@ -136,4 +135,68 @@ func buildExtensionAssets(_ *cli.Context) error {
 		return fmt.Errorf("write vocab payload: %w", err)
 	}
 	return nil
+}
+
+func buildExtensionEntry(vocab *entity.Vocab, word string, recommended []string, examples []extensionVocabEntry, matchOptions *entity.VocabMatchOptions) extensionVocab {
+	return extensionVocab{
+		Word:           word,
+		Category:       vocab.Category,
+		CategoryLabel:  entity.VocabCategoryStr[vocab.Category],
+		Explicit:       vocab.Explicit,
+		ExplicitLabel:  entity.VocabExplicitStr[vocab.Explicit],
+		Description:    strings.TrimSpace(vocab.Description),
+		Notice:         strings.TrimSpace(vocab.Notice),
+		Deprecation:    strings.TrimSpace(vocab.Deprecation),
+		Recommended:    recommended,
+		Examples:       examples,
+		MatchOptions:   matchOptions,
+		LastModifiedTs: vocab.ModTime.Unix(),
+	}
+}
+
+func prepareAliases(vocab *entity.Vocab) []string {
+	aliasSet := make(map[string]struct{})
+	for _, alias := range vocab.Aliases {
+		trimmed := strings.TrimSpace(alias)
+		if trimmed == "" {
+			continue
+		}
+		aliasSet[trimmed] = struct{}{}
+	}
+
+	if simplified := util.ToSimplified(vocab.Word); simplified != "" && simplified != vocab.Word {
+		aliasSet[simplified] = struct{}{}
+	}
+	if traditional := util.ToTraditional(vocab.Word); traditional != "" && traditional != vocab.Word {
+		aliasSet[traditional] = struct{}{}
+	}
+
+	aliases := make([]string, 0, len(aliasSet))
+	for alias := range aliasSet {
+		aliases = append(aliases, alias)
+	}
+	sort.Strings(aliases)
+	vocab.Aliases = aliases
+	return aliases
+}
+
+func augmentMatchOptions(options *entity.VocabMatchOptions) *entity.VocabMatchOptions {
+	if options == nil {
+		return nil
+	}
+	if len(options.SkipPhrases) > 0 {
+		options.SkipPhrases = util.ExpandVariants(options.SkipPhrases)
+	}
+	if options.Context != nil {
+		ctx := options.Context
+		if len(ctx.Features) > 0 {
+			for _, feature := range ctx.Features {
+				if len(feature.Tokens) == 0 {
+					continue
+				}
+				feature.Tokens = util.ExpandVariants(feature.Tokens)
+			}
+		}
+	}
+	return options
 }

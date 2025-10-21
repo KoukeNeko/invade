@@ -31,7 +31,7 @@ BAKAINVADE_DIR=$(pwd)/../.. go run . extension
 在 `database/vocabs/*.yml` 的詞彙資料中，可額外帶有 `matchOptions` 來細調比對行為，重新執行 `go run . extension` 後就會被帶入 `vocabs.json`：
 
 - `matchMode: "standalone"`：要求詞彙需出現在標點或空白邊界之間，適合英數縮寫或需獨立顯示的詞彙。
-- `skipPhrases`: `string[]`：列出遇到特定片語時要忽略的情境，例如 `"海內存知己"`。
+- `skipPhrases`: `string[]`：列出遇到特定片語時要忽略的情境，例如 `"海內存知己"`（系統會自動補上簡／繁體變化）。
 - `context`: 指定上下文加權規則，例如遇到特定前後詞時扣分（可用於排除常見誤判）。
 - `uncertainRange`: 讓規則評分落在某段區間時視為「需要模型進一步判斷」。
 - `classifier`: 載入離線訓練的權重（例如 TF-IDF + Logistic Regression）以強化邊界案例。
@@ -63,6 +63,7 @@ matchOptions:
   - `distance`: 向前或向後搜尋的距離（以 token 為單位，預設 1，被套用時會以 `distance - 1` 的索引取值）。
   - `tokens`: 觸發本規則的詞彙清單。
   - `weight`: 命中時調整的分數，可為負值（扣分）或正值（加分）。
+  輸入 `tokens` 後會自動生成對應的繁／簡體字形，無須重複列出。
 
 例如以下設定會在「寄」後面緊接「寄送服務／寄送資料」時扣 1 分，使整體分數低於 `threshold` 因而跳過標記：
 
@@ -95,6 +96,7 @@ matchOptions:
 - `bopomofo`：注音，可提高瀏覽器提示卡的辨識度。
 - `category`：所屬分類，對應 `cmd/build/entity.VocabCategory`。
 - `explicit`：粗暴語言或性相關標記，可選 (`LANGUAGE` 或 `SEXUAL`)。
+- `aliases`：其他字面寫法（如專有簡稱、錯別字等）。一般的繁／簡體會自動處理，除非需要額外字形才需填寫。
 - `notice`：提示卡會額外顯示的注意事項。
 - `description`：詞彙說明，支援多行文字。
 - `examples`：建議替換與錯誤範例，結構為：

@@ -93,7 +93,7 @@
         },
         "samples": 5,
         "source": "/Users/doeshing/Documents/GitHub/invade/tools/menu_classifier/data/menu_contexts.jsonl",
-        "trainedAt": "2025-10-21T13:50:26.556771+00:00"
+        "trainedAt": "2025-10-21T14:52:16.904076+00:00"
       },
       "positiveLabel": "technology",
       "requireSegments": true,
@@ -270,7 +270,7 @@
         },
         "samples": 12,
         "source": "/Users/doeshing/Documents/GitHub/invade/tools/menu_classifier/data/質量_contexts.jsonl",
-        "trainedAt": "2025-10-21T13:50:26.784371+00:00"
+        "trainedAt": "2025-10-21T14:52:17.150967+00:00"
       },
       "positiveLabel": "quality",
       "requireSegments": true,

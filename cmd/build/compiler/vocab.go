@@ -29,6 +29,7 @@ func CompileVocabs() ([]*entity.CompiledVocab, error) {
 			CategoryStr: entity.VocabCategoryStr[v.Category],
 			Category:    v.Category,
 			Explicit:    v.Explicit,
+			Aliases:     v.Aliases,
 			CorrectStr: strings.Join(lo.Map(v.Examples, func(example *entity.VocabExample, _ int) string {
 				return example.Words[0]
 			}), "、"),

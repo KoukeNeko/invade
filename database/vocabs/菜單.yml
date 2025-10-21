@@ -14,7 +14,7 @@ matchOptions:
     - 菜單項目
     - 菜單選擇
   context:
-    baseScore: -1
+    baseScore: 0.2
     threshold: 0
     features:
       - position: prev

@@ -49,6 +49,7 @@ type Vocab struct {
 	Bopomofo     string             `yaml:"bopomofo"`
 	Category     VocabCategory      `yaml:"category"`
 	Explicit     VocabExplicit      `yaml:"explicit"`
+	Aliases      []string           `yaml:"aliases"`
 	Description  string             `yaml:"description"`
 	Deprecation  string             `yaml:"deprecation"`
 	Notice       string             `yaml:"notice"`
@@ -147,6 +148,7 @@ type CompiledVocab struct {
 	Description string
 	Deprecation string
 	Examples    []*VocabExample
+	Aliases     []string
 	ModUnix     int64
 }
 
