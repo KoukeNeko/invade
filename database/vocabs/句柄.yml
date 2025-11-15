@@ -8,7 +8,7 @@ explicit:
 
 #
 description: |
-  英文指 Handle，是電腦程式中用來表示某個資源的指針（Pointer）或參考（Reference），通常用於讀寫檔案、網路連線等資源。
+  英文指 Handle，是電腦程式中用來表示某個資源的指標（Pointer）或參考（Reference），通常用於讀寫檔案、網路連線等資源。
 
 #
 examples:
@@ -17,3 +17,4 @@ examples:
       這個程式會透過{{控制代碼}}將資料寫入檔案。
     incorrect  : |
       這個[[程序]]會透過{{句柄}}將資料寫入[[文件]]。
+
